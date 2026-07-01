@@ -22,6 +22,23 @@
         flex-direction: column;
       }
 
+      /* BIOS Boot Screen */
+      #boot-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        color: #0f0;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: monospace;
+        font-size: 20px;
+      }
+
       /* Desktop & Icons */
       #desktop {
         flex-grow: 1;
@@ -132,6 +149,8 @@
     </style>
   </head>
   <body>
+    <div id="boot-screen">INITIALIZING SYSTEM... OK</div>
+
     <div id="desktop">
       <div class="icon" onclick="openWindow('window-terminal')">
         <span>>_</span>
@@ -205,6 +224,21 @@
 
     <script>
       /* --- JAVASCRIPT LOGIC --- */
+
+      // BIOS Boot Sequence (3 Seconds)
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          const bootScreen = document.getElementById("boot-screen");
+          if (bootScreen) {
+            bootScreen.style.opacity = "0";
+            bootScreen.style.transition = "opacity 0.5s ease";
+            setTimeout(() => {
+              bootScreen.style.display = "none";
+            }, 500);
+          }
+        }, 3000);
+      });
+
       let highestZIndex = 10;
 
       // Open a window and bring it to the front
@@ -228,7 +262,7 @@
       // Dragging Logic
       function dragWindow(e, id) {
         const elmnt = document.getElementById(id);
-        bringToFront(elmnt); // Bring to front when clicked to drag
+        bringToFront(elmnt);
 
         let pos1 = 0,
           pos2 = 0,
@@ -236,7 +270,6 @@
           pos4 = 0;
         e.preventDefault();
 
-        // Get the mouse cursor position at startup
         pos3 = e.clientX;
         pos4 = e.clientY;
 
@@ -245,18 +278,15 @@
 
         function elementDrag(e) {
           e.preventDefault();
-          // Calculate the new cursor position
           pos1 = pos3 - e.clientX;
           pos2 = pos4 - e.clientY;
           pos3 = e.clientX;
           pos4 = e.clientY;
-          // Set the element's new position
           elmnt.style.top = elmnt.offsetTop - pos2 + "px";
           elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
         }
 
         function closeDragElement() {
-          // Stop moving when mouse button is released
           document.onmouseup = null;
           document.onmousemove = null;
         }
@@ -270,7 +300,7 @@
         const ampm = hours >= 12 ? "PM" : "AM";
 
         hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = hours ? hours : 12;
         minutes = minutes < 10 ? "0" + minutes : minutes;
 
         document.getElementById("clock").innerText =
@@ -278,7 +308,7 @@
       }
 
       setInterval(updateClock, 1000);
-      updateClock(); // Init immediately
+      updateClock();
     </script>
   </body>
 </html>
