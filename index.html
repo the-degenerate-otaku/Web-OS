@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web OS Environment</title>
+    <title>Flux OS</title>
     <style>
       /* --- CSS STYLES --- */
       * {
@@ -12,7 +12,6 @@
         padding: 0;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
-
       body {
         background-color: #1e1e2e;
         color: #cdd6f4;
@@ -39,7 +38,7 @@
         font-size: 20px;
       }
 
-      /* Desktop & Icons */
+      /* Desktop */
       #desktop {
         flex-grow: 1;
         position: relative;
@@ -48,7 +47,6 @@
         flex-direction: column;
         gap: 20px;
       }
-
       .icon {
         width: 80px;
         text-align: center;
@@ -57,17 +55,14 @@
         border-radius: 8px;
         transition: background 0.2s;
       }
-
       .icon:hover {
         background-color: rgba(255, 255, 255, 0.1);
       }
-
       .icon span {
         font-size: 32px;
         display: block;
         margin-bottom: 5px;
       }
-
       .icon p {
         font-size: 12px;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -85,11 +80,9 @@
         flex-direction: column;
         overflow: hidden;
       }
-
       .window.hidden {
         display: none;
       }
-
       .window-header {
         background-color: #313244;
         padding: 10px 15px;
@@ -100,11 +93,9 @@
         user-select: none;
         border-bottom: 1px solid #45475a;
       }
-
       .window-header:active {
         cursor: grabbing;
       }
-
       .close-btn {
         background-color: #f38ba8;
         border: none;
@@ -113,11 +104,27 @@
         border-radius: 50%;
         cursor: pointer;
       }
-
       .window-content {
         padding: 20px;
         min-height: 200px;
         background-color: #11111b;
+      }
+
+      /* Advanced Terminal Styles */
+      #term-output {
+        font-family: "Courier New", Courier, monospace;
+        color: #a6e3a1;
+        height: 150px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+      }
+      #term-input {
+        background: #000;
+        border: 1px solid #333;
+        color: #fff;
+        width: 100%;
+        padding: 5px;
+        font-family: monospace;
       }
 
       /* Taskbar */
@@ -127,188 +134,118 @@
         border-top: 1px solid #313244;
         display: flex;
         align-items: center;
-        justify-content: space-between;
         padding: 0 20px;
         z-index: 9999;
       }
-
-      #start-btn {
-        background-color: #89b4fa;
-        color: #11111b;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 4px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
       #clock {
         font-family: monospace;
-        font-size: 16px;
+        margin-left: auto;
       }
     </style>
   </head>
   <body>
-    <div id="boot-screen">INITIALIZING SYSTEM... OK</div>
+    <div id="boot-screen">INITIALIZING FLUX OS... OK</div>
 
     <div id="desktop">
       <div class="icon" onclick="openWindow('window-terminal')">
         <span>>_</span>
         <p>Terminal</p>
       </div>
-      <div class="icon" onclick="openWindow('window-nasa')">
-        <span>🚀</span>
-        <p>NASA Uplink</p>
-      </div>
-      <div class="icon" onclick="openWindow('window-pet')">
-        <span>👾</span>
-        <p>Buddy</p>
-      </div>
     </div>
 
     <div
       id="window-terminal"
       class="window hidden"
-      style="top: 50px; left: 50px"
+      style="top: 50px; left: 50px; width: 450px"
     >
       <div
         class="window-header"
         onmousedown="dragWindow(event, 'window-terminal')"
       >
-        <span>System Terminal</span>
+        <span>Flux Terminal v1.0</span>
         <button
           class="close-btn"
           onclick="closeWindow('window-terminal')"
         ></button>
       </div>
-      <div
-        class="window-content"
-        style="color: #a6e3a1; font-family: monospace"
-      >
-        <p>Boot sequence initiated...</p>
-        <p>Loading arcade modules... OK.</p>
-        <br />
-        <p>$ <span style="animation: blink 1s infinite">_</span></p>
-      </div>
-    </div>
-
-    <div id="window-nasa" class="window hidden" style="top: 150px; left: 200px">
-      <div class="window-header" onmousedown="dragWindow(event, 'window-nasa')">
-        <span>Satellite Feed</span>
-        <button class="close-btn" onclick="closeWindow('window-nasa')"></button>
-      </div>
       <div class="window-content">
-        <p style="color: #f9e2af">Awaiting telemetry data...</p>
+        <div id="term-output">
+          FluxOS Kernel loaded.<br />Type 'help' for available commands.
+        </div>
+        <input
+          type="text"
+          id="term-input"
+          placeholder="admin@flux:~$ "
+          onkeydown="handleTerminal(event)"
+        />
       </div>
     </div>
 
-    <div
-      id="window-pet"
-      class="window hidden"
-      style="top: 100px; left: 600px; width: 250px"
-    >
-      <div class="window-header" onmousedown="dragWindow(event, 'window-pet')">
-        <span>Desktop Pet</span>
-        <button class="close-btn" onclick="closeWindow('window-pet')"></button>
-      </div>
-      <div class="window-content" style="text-align: center; font-size: 40px">
-        <p>ʕ•ᴥ•ʔ</p>
-        <p style="font-size: 14px; margin-top: 10px">Idle...</p>
-      </div>
-    </div>
-
-    <div id="taskbar">
-      <button id="start-btn">System</button>
-      <div id="clock">00:00</div>
-    </div>
+    <div id="taskbar"><div id="clock">00:00</div></div>
 
     <script>
-      /* --- JAVASCRIPT LOGIC --- */
-
-      // BIOS Boot Sequence (3 Seconds)
+      /* --- BOOT LOGIC --- */
       window.addEventListener("load", () => {
         setTimeout(() => {
-          const bootScreen = document.getElementById("boot-screen");
-          if (bootScreen) {
-            bootScreen.style.opacity = "0";
-            bootScreen.style.transition = "opacity 0.5s ease";
-            setTimeout(() => {
-              bootScreen.style.display = "none";
-            }, 500);
-          }
+          const b = document.getElementById("boot-screen");
+          b.style.opacity = "0";
+          b.style.transition = "0.5s";
+          setTimeout(() => (b.style.display = "none"), 500);
         }, 3000);
       });
 
-      let highestZIndex = 10;
+      /* --- ADVANCED APP LOGIC (Terminal) --- */
+      function handleTerminal(e) {
+        if (e.key === "Enter") {
+          const input = document.getElementById("term-input");
+          const output = document.getElementById("term-output");
+          const cmd = input.value.trim().toLowerCase();
+          output.innerHTML += `<br>admin@flux:~$ ${cmd}`;
 
-      // Open a window and bring it to the front
-      function openWindow(id) {
-        const win = document.getElementById(id);
-        win.classList.remove("hidden");
-        bringToFront(win);
+          if (cmd === "help")
+            output.innerHTML += "<br>Commands: time, clear, version, reboot";
+          else if (cmd === "time")
+            output.innerHTML += `<br>${new Date().toLocaleTimeString()}`;
+          else if (cmd === "clear") output.innerHTML = "Terminal Cleared.";
+          else if (cmd === "version")
+            output.innerHTML += "<br>Flux OS 1.0.0-Alpha";
+          else if (cmd === "reboot") location.reload();
+          else output.innerHTML += "<br>Command not found.";
+
+          input.value = "";
+          output.scrollTop = output.scrollHeight;
+        }
       }
 
-      // Close a window
+      /* --- WINDOW MANAGEMENT --- */
+      let z = 10;
+      function openWindow(id) {
+        document.getElementById(id).classList.remove("hidden");
+      }
       function closeWindow(id) {
         document.getElementById(id).classList.add("hidden");
       }
-
-      // Z-Index Management
-      function bringToFront(element) {
-        highestZIndex++;
-        element.style.zIndex = highestZIndex;
-      }
-
-      // Dragging Logic
       function dragWindow(e, id) {
-        const elmnt = document.getElementById(id);
-        bringToFront(elmnt);
-
-        let pos1 = 0,
-          pos2 = 0,
-          pos3 = 0,
-          pos4 = 0;
-        e.preventDefault();
-
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-
-        function elementDrag(e) {
-          e.preventDefault();
-          pos1 = pos3 - e.clientX;
-          pos2 = pos4 - e.clientY;
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          elmnt.style.top = elmnt.offsetTop - pos2 + "px";
-          elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
-        }
-
-        function closeDragElement() {
-          document.onmouseup = null;
+        const win = document.getElementById(id);
+        win.style.zIndex = ++z;
+        let p3 = e.clientX,
+          p4 = e.clientY;
+        document.onmousemove = (e) => {
+          win.style.top = win.offsetTop - (p4 - e.clientY) + "px";
+          win.style.left = win.offsetLeft - (p3 - e.clientX) + "px";
+          p3 = e.clientX;
+          p4 = e.clientY;
+        };
+        document.onmouseup = () => {
           document.onmousemove = null;
-        }
+        };
       }
 
-      // Clock Logic
-      function updateClock() {
-        const now = new Date();
-        let hours = now.getHours();
-        let minutes = now.getMinutes();
-        const ampm = hours >= 12 ? "PM" : "AM";
-
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-
+      /* --- CLOCK --- */
+      setInterval(() => {
         document.getElementById("clock").innerText =
-          `${hours}:${minutes} ${ampm}`;
-      }
-
-      setInterval(updateClock, 1000);
-      updateClock();
+          new Date().toLocaleTimeString();
+      }, 1000);
     </script>
   </body>
 </html>
