@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web OS Environment</title>
+    <style>
+      /* --- CSS STYLES --- */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #1e1e2e;
+        color: #cdd6f4;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Desktop & Icons */
+      #desktop {
+        flex-grow: 1;
+        position: relative;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .icon {
+        width: 80px;
+        text-align: center;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+
+      .icon:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .icon span {
+        font-size: 32px;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .icon p {
+        font-size: 12px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Windows */
+      .window {
+        position: absolute;
+        width: 400px;
+        background-color: #181825;
+        border: 1px solid #45475a;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .window.hidden {
+        display: none;
+      }
+
+      .window-header {
+        background-color: #313244;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: grab;
+        user-select: none;
+        border-bottom: 1px solid #45475a;
+      }
+
+      .window-header:active {
+        cursor: grabbing;
+      }
+
+      .close-btn {
+        background-color: #f38ba8;
+        border: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .window-content {
+        padding: 20px;
+        min-height: 200px;
+        background-color: #11111b;
+      }
+
+      /* Taskbar */
+      #taskbar {
+        height: 50px;
+        background-color: #11111b;
+        border-top: 1px solid #313244;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 9999;
+      }
+
+      #start-btn {
+        background-color: #89b4fa;
+        color: #11111b;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #clock {
+        font-family: monospace;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="desktop">
+      <div class="icon" onclick="openWindow('window-terminal')">
+        <span>>_</span>
+        <p>Terminal</p>
+      </div>
+      <div class="icon" onclick="openWindow('window-nasa')">
+        <span>🚀</span>
+        <p>NASA Uplink</p>
+      </div>
+      <div class="icon" onclick="openWindow('window-pet')">
+        <span>👾</span>
+        <p>Buddy</p>
+      </div>
+    </div>
+
+    <div
+      id="window-terminal"
+      class="window hidden"
+      style="top: 50px; left: 50px"
+    >
+      <div
+        class="window-header"
+        onmousedown="dragWindow(event, 'window-terminal')"
+      >
+        <span>System Terminal</span>
+        <button
+          class="close-btn"
+          onclick="closeWindow('window-terminal')"
+        ></button>
+      </div>
+      <div
+        class="window-content"
+        style="color: #a6e3a1; font-family: monospace"
+      >
+        <p>Boot sequence initiated...</p>
+        <p>Loading arcade modules... OK.</p>
+        <br />
+        <p>$ <span style="animation: blink 1s infinite">_</span></p>
+      </div>
+    </div>
+
+    <div id="window-nasa" class="window hidden" style="top: 150px; left: 200px">
+      <div class="window-header" onmousedown="dragWindow(event, 'window-nasa')">
+        <span>Satellite Feed</span>
+        <button class="close-btn" onclick="closeWindow('window-nasa')"></button>
+      </div>
+      <div class="window-content">
+        <p style="color: #f9e2af">Awaiting telemetry data...</p>
+      </div>
+    </div>
+
+    <div
+      id="window-pet"
+      class="window hidden"
+      style="top: 100px; left: 600px; width: 250px"
+    >
+      <div class="window-header" onmousedown="dragWindow(event, 'window-pet')">
+        <span>Desktop Pet</span>
+        <button class="close-btn" onclick="closeWindow('window-pet')"></button>
+      </div>
+      <div class="window-content" style="text-align: center; font-size: 40px">
+        <p>ʕ•ᴥ•ʔ</p>
+        <p style="font-size: 14px; margin-top: 10px">Idle...</p>
+      </div>
+    </div>
+
+    <div id="taskbar">
+      <button id="start-btn">System</button>
+      <div id="clock">00:00</div>
+    </div>
+
+    <script>
+      /* --- JAVASCRIPT LOGIC --- */
+      let highestZIndex = 10;
+
+      // Open a window and bring it to the front
+      function openWindow(id) {
+        const win = document.getElementById(id);
+        win.classList.remove("hidden");
+        bringToFront(win);
+      }
+
+      // Close a window
+      function closeWindow(id) {
+        document.getElementById(id).classList.add("hidden");
+      }
+
+      // Z-Index Management
+      function bringToFront(element) {
+        highestZIndex++;
+        element.style.zIndex = highestZIndex;
+      }
+
+      // Dragging Logic
+      function dragWindow(e, id) {
+        const elmnt = document.getElementById(id);
+        bringToFront(elmnt); // Bring to front when clicked to drag
+
+        let pos1 = 0,
+          pos2 = 0,
+          pos3 = 0,
+          pos4 = 0;
+        e.preventDefault();
+
+        // Get the mouse cursor position at startup
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+
+        function elementDrag(e) {
+          e.preventDefault();
+          // Calculate the new cursor position
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          // Set the element's new position
+          elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+          elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+        }
+
+        function closeDragElement() {
+          // Stop moving when mouse button is released
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      }
+
+      // Clock Logic
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? "PM" : "AM";
+
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        document.getElementById("clock").innerText =
+          `${hours}:${minutes} ${ampm}`;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock(); // Init immediately
+    </script>
+  </body>
+</html>
