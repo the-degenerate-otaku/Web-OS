@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="script.js"></script>
     <title>Flux OS</title>
     <style>
-      /* --- CSS STYLES --- */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -21,7 +21,6 @@
         flex-direction: column;
       }
 
-      /* BIOS Boot Screen */
       #boot-screen {
         position: fixed;
         top: 0;
@@ -38,7 +37,6 @@
         font-size: 20px;
       }
 
-      /* Desktop & Icons */
       #desktop {
         flex-grow: 1;
         position: relative;
@@ -70,7 +68,6 @@
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
       }
 
-      /* Window Base */
       .window {
         position: absolute;
         width: 400px;
@@ -112,7 +109,6 @@
         background-color: #11111b;
       }
 
-      /* Terminal App Specific */
       #term-output {
         font-family: "Courier New", Courier, monospace;
         color: #a6e3a1;
@@ -129,7 +125,6 @@
         font-family: monospace;
       }
 
-      /* Taskbar */
       #taskbar {
         height: 50px;
         background-color: #11111b;
@@ -229,7 +224,6 @@
         }, 3000);
       });
 
-      /* --- ADVANCED APP LOGIC (Terminal) --- */
       function handleTerminal(e) {
         if (e.key === "Enter") {
           const input = document.getElementById("term-input");
@@ -252,7 +246,6 @@
         }
       }
 
-      /* --- WINDOW MANAGEMENT --- */
       let z = 10;
       function openWindow(id) {
         document.getElementById(id).classList.remove("hidden");
@@ -276,7 +269,6 @@
         };
       }
 
-      /* --- CLOCK --- */
       setInterval(() => {
         document.getElementById("clock").innerText =
           new Date().toLocaleTimeString();
