@@ -10,7 +10,7 @@ What is it?, Its a web-based based Operating System simulation
 
 # How to use it
 
-- Download the index.html and open it in a browser or just click this link https://the-degenerate-otaku.github.io/Web-OS/
+- Download the index.html and open it in a browser or just click this link https://the-degenerate-otaku.github.io/Flux-OS/
 
 # Tech Stack
 

@@ -37,6 +37,7 @@
         font-size: 20px;
       }
 
+      /* Desktop & Icons */
       #desktop {
         flex-grow: 1;
         position: relative;
@@ -125,6 +126,7 @@
         font-family: monospace;
       }
 
+      /* Taskbar */
       #taskbar {
         height: 50px;
         background-color: #11111b;
@@ -214,7 +216,7 @@
     <div id="taskbar"><div id="clock">00:00</div></div>
 
     <script>
-      /* --- BOOT LOGIC --- */
+     
       window.addEventListener("load", () => {
         setTimeout(() => {
           const b = document.getElementById("boot-screen");
@@ -246,6 +248,7 @@
         }
       }
 
+      /* --- WINDOW MANAGEMENT --- */
       let z = 10;
       function openWindow(id) {
         document.getElementById(id).classList.remove("hidden");
