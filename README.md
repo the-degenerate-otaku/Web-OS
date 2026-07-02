@@ -7,6 +7,7 @@ What is it?, Its a web-based based Operating System simulation
 - Custom bootscreen
 - A CLI Interface
 - Real-time Desktop clock
+- Working Nasa Uplink
 
 # How to use it
 
