@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="script.js"></script>
     <title>Flux OS</title>
+    <script src="script.js"></script>
     <style>
       * {
         box-sizing: border-box;
@@ -125,6 +125,17 @@
         font-family: monospace;
       }
 
+      /* Formatting classes for the live space station data layout */
+      .telemetry-line {
+        font-family: monospace;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+      .telemetry-val {
+        color: #f9e2af;
+        font-weight: bold;
+      }
+
       #taskbar {
         height: 50px;
         background-color: #11111b;
@@ -145,7 +156,7 @@
 
     <div id="desktop">
       <div class="icon" onclick="openWindow('window-terminal')">
-        <span>>_</span>
+        <span>&gt;_</span>
         <p>Terminal</p>
       </div>
       <div class="icon" onclick="openWindow('window-nasa')">
@@ -191,8 +202,8 @@
         <span>Satellite Feed</span>
         <button class="close-btn" onclick="closeWindow('window-nasa')"></button>
       </div>
-      <div class="window-content">
-        <p style="color: #f9e2af">Awaiting telemetry data...</p>
+      <div class="window-content" id="nasa-content">
+        <p style="color: #f9e2af; font-family: monospace;">Awaiting telemetry data...</p>
       </div>
     </div>
 
@@ -214,12 +225,15 @@
     <div id="taskbar"><div id="clock">00:00</div></div>
 
     <script>
+      // Fallback base window wrappers to guarantee safety alongside external script loading
       window.addEventListener("load", () => {
         setTimeout(() => {
           const b = document.getElementById("boot-screen");
-          b.style.opacity = "0";
-          b.style.transition = "0.5s";
-          setTimeout(() => (b.style.display = "none"), 500);
+          if(b) {
+            b.style.opacity = "0";
+            b.style.transition = "0.5s";
+            setTimeout(() => (b.style.display = "none"), 500);
+          }
         }, 3000);
       });
 
@@ -245,18 +259,11 @@
         }
       }
 
-      let z = 10;
-      function openWindow(id) {
-        document.getElementById(id).classList.remove("hidden");
-      }
-      function closeWindow(id) {
-        document.getElementById(id).classList.add("hidden");
-      }
+      // Base layout behavior
       function dragWindow(e, id) {
         const win = document.getElementById(id);
-        win.style.zIndex = ++z;
-        let p3 = e.clientX,
-          p4 = e.clientY;
+        if(typeof z !== 'undefined') { win.style.zIndex = ++z; }
+        let p3 = e.clientX, p4 = e.clientY;
         document.onmousemove = (e) => {
           win.style.top = win.offsetTop - (p4 - e.clientY) + "px";
           win.style.left = win.offsetLeft - (p3 - e.clientX) + "px";
@@ -269,8 +276,8 @@
       }
 
       setInterval(() => {
-        document.getElementById("clock").innerText =
-          new Date().toLocaleTimeString();
+        const c = document.getElementById("clock");
+        if(c) { c.innerText = new Date().toLocaleTimeString(); }
       }, 1000);
     </script>
   </body>
