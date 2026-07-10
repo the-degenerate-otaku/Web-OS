@@ -4,152 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flux OS</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-      body {
-        background-color: #1e1e2e;
-        color: #cdd6f4;
-        height: 100vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #boot-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #000;
-        color: #0f0;
-        z-index: 99999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: monospace;
-        font-size: 20px;
-      }
-
-      #desktop {
-        flex-grow: 1;
-        position: relative;
-        padding: 20px;
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-        flex-wrap: wrap;
-        align-content: flex-start;
-      }
-      .icon {
-        width: 80px;
-        text-align: center;
-        cursor: pointer;
-        padding: 10px;
-        border-radius: 8px;
-        transition: background 0.2s;
-      }
-      .icon:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-      .icon span {
-        font-size: 32px;
-        display: block;
-        margin-bottom: 5px;
-      }
-      .icon p {
-        font-size: 12px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-      }
-
-      .window {
-        position: absolute;
-        width: 400px;
-        background-color: #181825;
-        border: 1px solid #45475a;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .window.hidden {
-        display: none;
-      }
-      .window-header {
-        background-color: #313244;
-        padding: 10px 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: grab;
-        user-select: none;
-        border-bottom: 1px solid #45475a;
-      }
-      .window-header:active {
-        cursor: grabbing;
-      }
-      .close-btn {
-        background-color: #f38ba8;
-        border: none;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-      .window-content {
-        padding: 20px;
-        min-height: 200px;
-        background-color: #11111b;
-      }
-
-      #term-output {
-        font-family: "Courier New", Courier, monospace;
-        color: #a6e3a1;
-        height: 150px;
-        overflow-y: auto;
-        margin-bottom: 10px;
-      }
-      #term-input {
-        background: #000;
-        border: 1px solid #333;
-        color: #fff;
-        width: 100%;
-        padding: 5px;
-        font-family: monospace;
-      }
-
-      /* Formatting classes for the live space station data layout */
-      .telemetry-line {
-        font-family: monospace;
-        margin-bottom: 8px;
-        font-size: 13px;
-      }
-      .telemetry-val {
-        color: #f9e2af;
-        font-weight: bold;
-      }
-
-      #taskbar {
-        height: 50px;
-        background-color: #11111b;
-        border-top: 1px solid #313244;
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-        z-index: 9999;
-      }
-      #clock {
-        font-family: monospace;
-        margin-left: auto;
-      }
-    </style>
   </head>
   <body>
     <div id="boot-screen">INITIALIZING FLUX OS... OK</div>
@@ -167,6 +23,12 @@
         <span>👾</span>
         <p>Buddy</p>
       </div>
+      <div class="icon" onclick="openWindow('window-settings')">
+        <span>⚙️</span>
+        <p>Settings</p>
+      </div>
+
+      <div id="dock" class="dock"></div>
     </div>
 
     <div
@@ -178,8 +40,8 @@
         class="window-header"
         onmousedown="dragWindow(event, 'window-terminal')"
       >
-        <span>Flux Terminal v1.0</span>
-        <button
+        <span>Flux Terminal</span
+        ><button
           class="close-btn"
           onclick="closeWindow('window-terminal')"
         ></button>
@@ -199,11 +61,16 @@
 
     <div id="window-nasa" class="window hidden" style="top: 150px; left: 200px">
       <div class="window-header" onmousedown="dragWindow(event, 'window-nasa')">
-        <span>Satellite Feed</span>
-        <button class="close-btn" onclick="closeWindow('window-nasa')"></button>
+        <span>Satellite Feed</span
+        ><button
+          class="close-btn"
+          onclick="closeWindow('window-nasa')"
+        ></button>
       </div>
       <div class="window-content" id="nasa-content">
-        <p style="color: #f9e2af; font-family: monospace;">Awaiting telemetry data...</p>
+        <p style="color: var(--accent-color); font-family: monospace">
+          Awaiting telemetry data...
+        </p>
       </div>
     </div>
 
@@ -213,8 +80,8 @@
       style="top: 100px; left: 600px; width: 250px"
     >
       <div class="window-header" onmousedown="dragWindow(event, 'window-pet')">
-        <span>Desktop Pet</span>
-        <button class="close-btn" onclick="closeWindow('window-pet')"></button>
+        <span>Desktop Pet</span
+        ><button class="close-btn" onclick="closeWindow('window-pet')"></button>
       </div>
       <div class="window-content" style="text-align: center; font-size: 40px">
         <p>ʕ•ᴥ•ʔ</p>
@@ -222,48 +89,187 @@
       </div>
     </div>
 
+    <div
+      id="window-settings"
+      class="window hidden"
+      style="top: 50px; left: 650px; width: 340px"
+    >
+      <div
+        class="window-header"
+        onmousedown="dragWindow(event, 'window-settings')"
+      >
+        <span>System Settings</span
+        ><button
+          class="close-btn"
+          onclick="closeWindow('window-settings')"
+        ></button>
+      </div>
+      <div
+        class="window-content"
+        style="display: flex; flex-direction: column; gap: 5px"
+      >
+        <div class="control-group">
+          <label>CORE AESTHETIC THEMES</label>
+          <button
+            class="theme-btn"
+            style="background: #2e3440; color: #88c0d0"
+            onclick="setTheme('nord')"
+          >
+            Frost
+          </button>
+          <button
+            class="theme-btn"
+            style="background: #0d0e15; color: #ff0055"
+            onclick="setTheme('cyber')"
+          >
+            Neon
+          </button>
+          <button
+            class="theme-btn"
+            style="background: #1e1e1e; color: #ffffff"
+            onclick="setTheme('mono')"
+          >
+            Pure
+          </button>
+          <button
+            class="theme-btn"
+            style="background: #0a100e; color: #d99a5c"
+            onclick="setTheme('nova')"
+          >
+            Glass
+          </button>
+        </div>
+
+        <div class="control-group">
+          <label>WINDOW TRANSPARENCY (OPACITY)</label>
+          <input
+            type="range"
+            id="opacity-slider"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.15"
+            oninput="handleOpacitySlider(this.value)"
+            style="width: 100%"
+          />
+        </div>
+        <div class="control-group">
+          <label>FROSTED GLASS BLUR</label>
+          <input
+            type="range"
+            id="blur-slider"
+            min="0"
+            max="40"
+            step="1"
+            value="15"
+            oninput="handleBlurSlider(this.value)"
+            style="width: 100%"
+          />
+        </div>
+
+        <div class="control-group">
+          <label>CUSTOM WALLPAPER</label>
+          <input
+            type="file"
+            id="wallpaper-upload"
+            accept="image/*"
+            onchange="handleWallpaperUpload(event)"
+            style="font-size: 11px; margin-bottom: 5px"
+          />
+          <button
+            class="theme-btn"
+            style="
+              background: #f38ba8;
+              color: #111;
+              font-size: 11px;
+              width: 100%;
+              margin: 0;
+            "
+            onclick="clearWallpaper()"
+          >
+            Remove Wallpaper
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="window-addapp"
+      class="window hidden"
+      style="top: 250px; left: 450px; width: 320px"
+    >
+      <div
+        class="window-header"
+        onmousedown="dragWindow(event, 'window-addapp')"
+      >
+        <span>Add to Dock</span
+        ><button
+          class="close-btn"
+          onclick="closeWindow('window-addapp')"
+        ></button>
+      </div>
+      <div
+        class="window-content"
+        style="display: flex; flex-direction: column; gap: 12px"
+      >
+        <input
+          type="text"
+          id="app-name"
+          placeholder="App Name (e.g. GitHub)"
+          style="
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            outline: none;
+          "
+        />
+        <input
+          type="text"
+          id="app-url"
+          placeholder="URL (e.g. github.com)"
+          style="
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            outline: none;
+          "
+        />
+        <button
+          class="theme-btn"
+          style="background: var(--accent-color); color: #000; margin-top: 5px"
+          onclick="handleAddApp()"
+        >
+          Pin Shortcut
+        </button>
+      </div>
+    </div>
+
     <div id="taskbar"><div id="clock">00:00</div></div>
 
     <script>
-      // Fallback base window wrappers to guarantee safety alongside external script loading
       window.addEventListener("load", () => {
         setTimeout(() => {
           const b = document.getElementById("boot-screen");
-          if(b) {
+          if (b) {
             b.style.opacity = "0";
             b.style.transition = "0.5s";
             setTimeout(() => (b.style.display = "none"), 500);
           }
-        }, 3000);
+        }, 2000);
+
+        if (typeof restoreSettings === "function") restoreSettings();
+        if (typeof initDock === "function") initDock();
       });
 
-      function handleTerminal(e) {
-        if (e.key === "Enter") {
-          const input = document.getElementById("term-input");
-          const output = document.getElementById("term-output");
-          const cmd = input.value.trim().toLowerCase();
-          output.innerHTML += `<br>admin@flux:~$ ${cmd}`;
-
-          if (cmd === "help")
-            output.innerHTML += "<br>Commands: time, clear, version, reboot";
-          else if (cmd === "time")
-            output.innerHTML += `<br>${new Date().toLocaleTimeString()}`;
-          else if (cmd === "clear") output.innerHTML = "Terminal Cleared.";
-          else if (cmd === "version")
-            output.innerHTML += "<br>Flux OS 1.0.0-Alpha";
-          else if (cmd === "reboot") location.reload();
-          else output.innerHTML += "<br>Command not found.";
-
-          input.value = "";
-          output.scrollTop = output.scrollHeight;
-        }
-      }
-
-      // Base layout behavior
       function dragWindow(e, id) {
         const win = document.getElementById(id);
-        if(typeof z !== 'undefined') { win.style.zIndex = ++z; }
-        let p3 = e.clientX, p4 = e.clientY;
+        if (typeof z !== "undefined") win.style.zIndex = ++z;
+        let p3 = e.clientX,
+          p4 = e.clientY;
         document.onmousemove = (e) => {
           win.style.top = win.offsetTop - (p4 - e.clientY) + "px";
           win.style.left = win.offsetLeft - (p3 - e.clientX) + "px";
@@ -277,7 +283,7 @@
 
       setInterval(() => {
         const c = document.getElementById("clock");
-        if(c) { c.innerText = new Date().toLocaleTimeString(); }
+        if (c) c.innerText = new Date().toLocaleTimeString();
       }, 1000);
     </script>
   </body>
