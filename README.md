@@ -1,4 +1,4 @@
-# Flux OS V1
+# Flux OS V1.0.1
 
 What is it?, Its a web-based based Operating System simulation
 
@@ -8,6 +8,9 @@ What is it?, Its a web-based based Operating System simulation
 - A CLI Interface
 - Real-time Desktop clock
 - Working Nasa Uplink
+- Customisable Wallpaper
+- Window Transparency Settings 
+- Web-App Dock
 
 # How to use it
 
@@ -16,6 +19,8 @@ What is it?, Its a web-based based Operating System simulation
 # Tech Stack
 
 - HTML
+- JS
+- CSS
 
 # Build For
 
