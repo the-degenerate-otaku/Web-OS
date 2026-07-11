@@ -1,4 +1,3 @@
-
 let z = 10;
 let nasaInterval = null;
 let dockApps = [];
@@ -295,4 +294,99 @@ function restoreSettings() {
     } catch (e) {
         console.error("Error loading saved settings");
     }
+    restoreIconPositions();
+
+
 }
+
+let isDraggingIcon = false;
+
+function handleIconClick(windowId) {
+    if (!isDraggingIcon) openWindow(windowId);
+}
+
+function dragIcon(e, id) {
+    isDraggingIcon = false;
+    const icon = document.getElementById(id);
+    let startX = e.clientX, startY = e.clientY;
+
+    document.onmousemove = (event) => {
+        isDraggingIcon = true;
+        let dx = startX - event.clientX;
+        let dy = startY - event.clientY;
+        startX = event.clientX;
+        startY = event.clientY;
+
+        icon.style.top = (icon.offsetTop - dy) + "px";
+        icon.style.left = (icon.offsetLeft - dx) + "px";
+    };
+
+    document.onmouseup = () => {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        if (isDraggingIcon) {
+            saveIconPositions();
+
+            setTimeout(() => isDraggingIcon = false, 50);
+        }
+    };
+}
+
+function saveIconPositions() {
+    const icons = document.querySelectorAll('.icon');
+    const positions = {};
+    icons.forEach(icon => {
+        positions[icon.id] = { top: icon.style.top, left: icon.style.left };
+    });
+    localStorage.setItem('flux_icons', JSON.stringify(positions));
+}
+
+function restoreIconPositions() {
+    try {
+        const positions = JSON.parse(localStorage.getItem('flux_icons'));
+        if (positions) {
+            for (const [id, pos] of Object.entries(positions)) {
+                const icon = document.getElementById(id);
+                if (icon) {
+                    icon.style.top = pos.top;
+                    icon.style.left = pos.left;
+                }
+            }
+        }
+    } catch (e) { }
+}
+
+function resetIcons() {
+    localStorage.removeItem('flux_icons');
+    location.reload();
+}
+
+
+document.addEventListener('contextmenu', (e) => {
+
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    e.preventDefault();
+
+    const menu = document.getElementById('context-menu');
+    menu.classList.remove('hidden');
+    let x = e.clientX;
+    let y = e.clientY;
+    if (x + 220 > window.innerWidth) x -= 220;
+    if (y + 150 > window.innerHeight) y -= 150;
+
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+});
+
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('context-menu');
+    if (menu && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    restoreSettings();
+    ComnyangPet.init();
+});

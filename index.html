@@ -6,29 +6,68 @@
     <title>Flux OS</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
+    <script src="comnyang-behavior.js"></script>
   </head>
   <body>
     <div id="boot-screen">INITIALIZING FLUX OS... OK</div>
 
     <div id="desktop">
-      <div class="icon" onclick="openWindow('window-terminal')">
+      <div
+        class="icon"
+        id="icon-term"
+        style="top: 30px; left: 30px"
+        onmousedown="dragIcon(event, 'icon-term')"
+        onclick="handleIconClick('window-terminal')"
+      >
         <span>&gt;_</span>
         <p>Terminal</p>
       </div>
-      <div class="icon" onclick="openWindow('window-nasa')">
+      <div
+        class="icon"
+        id="icon-nasa"
+        style="top: 130px; left: 30px"
+        onmousedown="dragIcon(event, 'icon-nasa')"
+        onclick="handleIconClick('window-nasa')"
+      >
         <span>🚀</span>
         <p>NASA Uplink</p>
       </div>
-      <div class="icon" onclick="openWindow('window-pet')">
+      <div
+        class="icon"
+        id="icon-pet"
+        style="top: 230px; left: 30px"
+        onmousedown="dragIcon(event, 'icon-pet')"
+        onclick="handleIconClick('window-pet')"
+      >
         <span>👾</span>
         <p>Buddy</p>
       </div>
-      <div class="icon" onclick="openWindow('window-settings')">
+      <div
+        class="icon"
+        id="icon-set"
+        style="top: 330px; left: 30px"
+        onmousedown="dragIcon(event, 'icon-set')"
+        onclick="handleIconClick('window-settings')"
+      >
         <span>⚙️</span>
         <p>Settings</p>
       </div>
 
       <div id="dock" class="dock"></div>
+    </div>
+
+    <div id="context-menu" class="hidden">
+      <div class="context-item" onclick="openWindow('window-settings')">
+        ⚙️ System Settings
+      </div>
+      <div
+        class="context-item"
+        onclick="document.getElementById('wallpaper-upload').click()"
+      >
+        🖼️ Change Wallpaper
+      </div>
+      <div class="context-divider"></div>
+      <div class="context-item" onclick="resetIcons()">🔄 Reset Icon Grid</div>
     </div>
 
     <div
