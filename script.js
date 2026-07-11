@@ -388,5 +388,5 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     restoreSettings();
-    ComnyangPet.init();
+    CatBehaviour.init();
 });
