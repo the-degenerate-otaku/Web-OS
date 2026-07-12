@@ -1,6 +1,4 @@
-// comnyang-behavior.js — standalone desktop pet behavior pack
-// Requires comnyang-skin.js loaded first (provides global `skin`)
-// Usage: ComnyangPet.init({ ...optional config overrides })
+
 
 const ComnyangPet = (function () {
     const PX = 4;
@@ -76,10 +74,7 @@ const ComnyangPet = (function () {
         return api;
     }
 
-    // ---------- DEBUG: live offset nudger ----------
-    // Press 1-9 to select a part (see order below), arrow keys to nudge 1px
-    // (hold Shift for 5px). Current OFFSETS prints to console on each change.
-    // Copy the printed object into OFFSETS at the top of this file when done.
+
     function initDebugAlign() {
         const partKeys = Object.keys(OFFSETS);
         let selected = 0;
@@ -106,7 +101,6 @@ const ComnyangPet = (function () {
         });
     }
 
-    // ---------- input ----------
     function onKeydown() {
         const now = performance.now();
         keyTimes.push(now);
@@ -115,7 +109,7 @@ const ComnyangPet = (function () {
         cat.pawPhase = !cat.pawPhase;
         if (cat.mode === 'sleep' || cat.mode === 'roam' || cat.mode === 'idle') cat.mode = 'typing';
 
-        const wpm = (keyTimes.length / 2) * 12; // rough keys/sec -> wpm approximation
+        const wpm = (keyTimes.length / 2) * 12; 
         if (wpm >= cfg.overheatWpmThreshold) cat.mode = 'overheat';
     }
 
@@ -136,7 +130,7 @@ const ComnyangPet = (function () {
             cat.mode = 'pounce';
             lastActivity = Date.now();
         }
-        // subtle head lean toward cursor (eye-tracking substitute — see notes)
+    
         cat.lean = Math.max(-3, Math.min(3, (mouse.x - cx) / 80));
     }
 
@@ -163,14 +157,13 @@ const ComnyangPet = (function () {
         }
     }
 
-    // external hook — call from your app, e.g. on window-open sound/event
+
     function startle() {
         cat.mode = 'startled';
         cat.startledUntil = Date.now() + 400;
         lastActivity = Date.now();
     }
 
-    // ---------- idle quirks ----------
     function scheduleQuirk() {
         const [min, max] = cfg.idleQuirkIntervalMs;
         clearTimeout(quirkTimer);
@@ -185,7 +178,8 @@ const ComnyangPet = (function () {
         cat.quirkUntil = Date.now() + 500;
     }
 
-    // ---------- update ----------
+
+    
     function update() {
         const idleMs = Date.now() - lastActivity;
         const now = Date.now();
@@ -194,7 +188,6 @@ const ComnyangPet = (function () {
         if (cat.mode === 'startled' && now > cat.startledUntil) cat.mode = 'idle';
         if (cat.quirk && now > cat.quirkUntil) cat.quirk = null;
 
-        // heat ramps toward target based on recent typing speed, decays otherwise
         const wpm = (keyTimes.filter(t => performance.now() - t < 2000).length / 2) * 12;
         const targetHeat = cat.mode === 'overheat' ? 1 : (wpm > cfg.overheatWpmThreshold * 0.5 ? 0.4 : 0);
         cat.heat = targetHeat > cat.heat
@@ -229,7 +222,6 @@ const ComnyangPet = (function () {
         cat.squash = cat.quirk === 'stretch' ? 1.15 : 1;
     }
 
-    // ---------- render ----------
     function drawPart(name, heat) {
         const off = OFFSETS[name];
         for (const { x, y, color } of pattern[name]) {
