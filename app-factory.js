@@ -47,10 +47,15 @@ registerApp('window-nasa', {
     title: 'Satellite Feed',
     icon: '🚀',
     onOpen: () => {
-        fetchSpaceStationData();
-        if (!nasaInterval) nasaInterval = setInterval(fetchSpaceStationData, 5000);
+        if (typeof NotificationEngine !== 'undefined') {
+            NotificationEngine.push('NASA Uplink', 'Establishing secure satellite connection...');
+            if (!nasaInterval) nasaInterval = setInterval(fetchSpaceStationData, 5000);
+        }
     },
     onClose: () => {
         if (nasaInterval) { clearInterval(nasaInterval); nasaInterval = null; }
+        if (typeof NotificationEngine !== 'undefined') {
+            NotificationEngine.push('NASA Uplink', 'Connection terminated.');
+        }
     }
 });

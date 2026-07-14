@@ -41,6 +41,9 @@ function setTheme(themeName) {
             document.documentElement.style.setProperty(property, value);
         }
         localStorage.setItem('flux_theme', themeName);
+        if (typeof NotificationEngine !== 'undefined') {
+            NotificationEngine.push('System Theme', 'Active theme updated to ' + themeName.toUpperCase());
+        }
     }
 }
 
@@ -106,7 +109,7 @@ function closeWindow(id) {
     } else {
         finish();
     }
-}  disp
+}
 
 
 async function fetchSpaceStationData() {
@@ -388,9 +391,4 @@ document.addEventListener('click', (e) => {
     if (menu && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
     }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    restoreSettings();
-    CatBehaviour.init();
 });
