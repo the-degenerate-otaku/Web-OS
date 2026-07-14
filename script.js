@@ -106,7 +106,7 @@ function closeWindow(id) {
     } else {
         finish();
     }
-}
+}  disp
 
 
 async function fetchSpaceStationData() {
