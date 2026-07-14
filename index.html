@@ -12,8 +12,6 @@
     <script src="notifications.js"></script>
   </head>
   <body>
-    </head>
-  <body>
    <div id="boot-screen">
       <div id="boot-console"></div>
     </div>
@@ -26,10 +24,6 @@
         <button class="unlock-btn" onclick="unlockSystem()">Enter Workspace</button>
       </div>
     </div>
-      class="glow-orb"
-      id="orb1"
-      style="width: 400px; height: 400px; top: 8%; left: 10%"
-    ></div>
     <div
       class="glow-orb"
       id="orb1"
@@ -127,10 +121,9 @@
         onmousedown="dragWindow(event, 'window-terminal')"
       >
         <span>Flux Terminal</span
-        ><button
-          class="close-btn"
-          onclick="closeWindow('window-terminal')"
-        ></button>
+          <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
+          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
+          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
       </div>
       <div class="window-content">
         <div id="term-output">
@@ -148,10 +141,9 @@
     <div id="window-nasa" class="window hidden" style="top: 150px; left: 200px">
       <div class="window-header" onmousedown="dragWindow(event, 'window-nasa')">
         <span>Satellite Feed</span
-        ><button
-          class="close-btn"
-          onclick="closeWindow('window-nasa')"
-        ></button>
+         <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
+          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
+          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
       </div>
       <div class="window-content" id="nasa-content">
         <p style="color: var(--accent-color); font-family: monospace">
@@ -167,8 +159,9 @@
     >
       <div class="window-header" onmousedown="dragWindow(event, 'window-pet')">
         <span>Desktop Pet</span
-        ><button class="close-btn" onclick="closeWindow('window-pet')"></button>
-      </div>
+         <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
+          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
+          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
       <div class="window-content" style="text-align: center; font-size: 40px">
         <p>ʕ•ᴥ•ʔ</p>
         <p style="font-size: 14px; margin-top: 10px">Idle...</p>
@@ -185,10 +178,9 @@
         onmousedown="dragWindow(event, 'window-settings')"
       >
         <span>System Settings</span
-        ><button
-          class="close-btn"
-          onclick="closeWindow('window-settings')"
-        ></button>
+         <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
+          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
+          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
       </div>
       <div
         class="window-content"
@@ -241,16 +233,13 @@
         </div>
         <div class="control-group">
           <label>FROSTED GLASS BLUR</label>
-          <input
-            type="range"
-            id="blur-slider"
-            min="0"
-            max="40"
-            step="1"
-            value="15"
-            oninput="handleBlurSlider(this.value)"
-            style="width: 100%"
-          />
+          <input type="range" id="blur-slider" min="0" max="40" step="1" value="15" oninput="handleBlurSlider(this.value)" style="width: 100%" />
+        </div>
+
+        <div class="control-group">
+          <label>CURSOR EFFECTS</label>
+          <input type="checkbox" id="cursor-fx-toggle" checked />
+        />
 
           <div class="control-group">
             <label>CURSOR EFFECTS</label>
@@ -294,10 +283,9 @@
         onmousedown="dragWindow(event, 'window-addapp')"
       >
         <span>Add to Dock</span
-        ><button
-          class="close-btn"
-          onclick="closeWindow('window-addapp')"
-        ></button>
+          <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
+          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
+          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
       </div>
       <div
         class="window-content"
@@ -590,7 +578,12 @@
             NotificationEngine.save();
             NotificationEngine.renderHistory();
           "
-        >
+
+        document.addEventListener("mousedown", (e) => {
+        const win = e.target.closest(".window");
+        if (win && !win.classList.contains("hidden")) focusWindow(win.id);
+        });
+        > 
           Clear All
         </button>
       </div>

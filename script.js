@@ -1,5 +1,6 @@
 let z = 10;
 let nasaInterval = null;
+let nasaConnected = null;
 let dockApps = [];
 
 
@@ -34,15 +35,18 @@ const systemThemes = {
     }
 };
 
-function setTheme(themeName) {
+const themeDisplayNames = { nord: 'Frost', cyber: 'Neon', mono: 'Pure', nova: 'Glass' };
+
+function setTheme(themeName, silent = false) {
     if (systemThemes[themeName]) {
         const themeData = systemThemes[themeName];
         for (const [property, value] of Object.entries(themeData)) {
             document.documentElement.style.setProperty(property, value);
         }
         localStorage.setItem('flux_theme', themeName);
-        if (typeof NotificationEngine !== 'undefined') {
-            NotificationEngine.push('System Theme', 'Active theme updated to ' + themeName.toUpperCase());
+        if (!silent && typeof NotificationEngine !== 'undefined') {
+            const label = themeDisplayNames[themeName] || themeName;
+            NotificationEngine.push('System Theme', 'Active theme updated to ' + label);
         }
     }
 }
@@ -129,8 +133,17 @@ async function fetchSpaceStationData() {
             <div class="telemetry-line">> ALTITUDE    : <span class="telemetry-val">${data.altitude.toFixed(2)} km</span></div>
             <div class="telemetry-line" style="color: var(--accent-color); margin-top: 15px; font-size:11px;">● LIVE SIGNAL STABLE</div>
         `;
+
+        if (nasaConnected !== true) {
+            if (typeof NotificationEngine !== 'undefined') NotificationEngine.push('NASA Uplink', 'Signal acquired.');
+            nasaConnected = true;
+        }
     } catch (error) {
         container.innerHTML = '<p style="color: #f38ba8; font-family: monospace;">[ERROR] Uplink Lost. Retrying synchronization...</p>';
+        if (nasaConnected !== false) {
+            if (typeof NotificationEngine !== 'undefined') NotificationEngine.push('NASA Uplink', 'Signal lost.');
+            nasaConnected = false;
+        }
     }
 }
 
@@ -277,8 +290,8 @@ function renderDock() {
 function restoreSettings() {
     try {
         const theme = localStorage.getItem('flux_theme');
-        if (theme) setTheme(theme);
-        else setTheme('nova');
+        if (theme) setTheme(theme, true);
+        else setTheme('nova', true);
 
         const op = localStorage.getItem('flux_opacity');
         if (op) {

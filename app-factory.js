@@ -19,11 +19,26 @@ function createApp({ id, title, icon, width = 400, height = 200, x = 100, y = 10
     const titleSpan = document.createElement('span');
     titleSpan.textContent = title;
 
+    const controls = document.createElement('div');
+    controls.className = 'window-controls';
+
+    const minBtn = document.createElement('button');
+    minBtn.className = 'win-btn min-btn';
+    minBtn.textContent = '–';
+    minBtn.onclick = () => minimizeWindow(id);
+
+    const maxBtn = document.createElement('button');
+    maxBtn.className = 'win-btn max-btn';
+    maxBtn.textContent = '□';
+    maxBtn.onclick = () => toggleMaximize(id);
+
     const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-btn';
+    closeBtn.className = 'win-btn close-btn';
+    closeBtn.textContent = '×';
     closeBtn.onclick = () => closeWindow(id);
 
-    header.append(titleSpan, closeBtn);
+    controls.append(minBtn, maxBtn, closeBtn);
+    header.append(titleSpan, controls);
 
     const contentEl = document.createElement('div');
     contentEl.className = 'window-content';
@@ -47,15 +62,11 @@ registerApp('window-nasa', {
     title: 'Satellite Feed',
     icon: '🚀',
     onOpen: () => {
-        if (typeof NotificationEngine !== 'undefined') {
-            NotificationEngine.push('NASA Uplink', 'Establishing secure satellite connection...');
-            if (!nasaInterval) nasaInterval = setInterval(fetchSpaceStationData, 5000);
-        }
+        fetchSpaceStationData();
+        if (!nasaInterval) nasaInterval = setInterval(fetchSpaceStationData, 5000);
     },
     onClose: () => {
         if (nasaInterval) { clearInterval(nasaInterval); nasaInterval = null; }
-        if (typeof NotificationEngine !== 'undefined') {
-            NotificationEngine.push('NASA Uplink', 'Connection terminated.');
-        }
+        nasaConnected = null;
     }
 });
