@@ -85,22 +85,26 @@ function handleTerminal(e) {
 
 
 function openWindow(id) {
-    document.getElementById(id).classList.remove("hidden");
-
-    if (id === 'window-nasa') {
-        fetchSpaceStationData();
-        if (!nasaInterval) {
-            nasaInterval = setInterval(fetchSpaceStationData, 5000);
-        }
+    const win = document.getElementById(id);
+    win.classList.remove("hidden");
+    if (window.gsap) {
+        gsap.fromTo(win, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out" });
     }
+    const app = AppRegistry[id];
+    if (app && app.onOpen) app.onOpen();
 }
 
 function closeWindow(id) {
-    document.getElementById(id).classList.add("hidden");
-
-    if (id === 'window-nasa' && nasaInterval) {
-        clearInterval(nasaInterval);
-        nasaInterval = null;
+    const win = document.getElementById(id);
+    const app = AppRegistry[id];
+    const finish = () => {
+        win.classList.add("hidden");
+        if (app && app.onClose) app.onClose();
+    };
+    if (window.gsap) {
+        gsap.to(win, { scale: 0.9, opacity: 0, duration: 0.2, ease: "power2.in", onComplete: finish });
+    } else {
+        finish();
     }
 }
 

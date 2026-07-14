@@ -12,7 +12,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;  
 }
 
 body {
@@ -260,6 +260,93 @@ body {
   flex-direction: column;
   padding: 6px;
   z-index: 100000;
+}
+
+@media (pointer: fine) {
+  body.cursor-fx-on, body.cursor-fx-on * {
+    cursor: none;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent-color);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999999;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s, height 0.15s, background-color 0.15s, opacity 0.15s;
+  mix-blend-mode: difference;
+}
+
+.custom-cursor.cursor-hover {
+  width: 36px;
+  height: 36px;
+  background-color: var(--accent-color);
+  opacity: 0.5;
+}
+
+.custom-cursor.hidden-cursor,
+#cursor-trail-canvas.hidden-cursor {
+  display: none;
+}
+
+#cursor-trail-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 999998;
+}
+
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, var(--accent-color), transparent 70%);
+}
+
+#desktop {
+  position: relative;
+  z-index: 1;
+}
+
+.window-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.window-header.shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  animation: shimmerSweep 1s ease;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  to {
+    left: 150%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor,
+  #cursor-trail-canvas,
+  .glow-orb {
+    display: none !important;
+  }
 }
 
 #context-menu.hidden {
