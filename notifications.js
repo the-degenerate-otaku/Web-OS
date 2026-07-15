@@ -57,7 +57,7 @@ const NotificationEngine = {
     renderHistory() {
         const list = document.getElementById('notif-list');
         if (!list) return;
-        list.innerHTML = ''; // Safe here, clearing parent before appending nodes
+        list.innerHTML = ''; 
 
         this.history.forEach(n => {
             const item = document.createElement('div');

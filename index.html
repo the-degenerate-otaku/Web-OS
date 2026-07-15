@@ -12,7 +12,7 @@
     <script src="notifications.js"></script>
   </head>
   <body>
-   <div id="boot-screen">
+    <div id="boot-screen">
       <div id="boot-console"></div>
     </div>
 
@@ -21,7 +21,9 @@
         <h1 id="lock-clock">00:00</h1>
         <div class="user-avatar">👤</div>
         <h2>FluxOS System</h2>
-        <button class="unlock-btn" onclick="unlockSystem()">Enter Workspace</button>
+        <button class="unlock-btn" onclick="unlockSystem()">
+          Enter Workspace
+        </button>
       </div>
     </div>
     <div
@@ -83,13 +85,21 @@
 
       <div
         class="icon"
+        id="icon-files"
         style="top: 430px; left: 30px"
-        onclick="openFileExplorer()"
+        onmousedown="dragIcon(event, 'icon-files')"
+        onclick="if (!isDraggingIcon) openFileExplorer();"
       >
         <span>📁</span>
         <p>Files</p>
       </div>
-      <div class="icon" style="top: 530px; left: 30px" onclick="openNotepad()">
+      <div
+        class="icon"
+        id="icon-notepad"
+        style="top: 530px; left: 30px"
+        onmousedown="dragIcon(event, 'icon-notepad')"
+        onclick="if (!isDraggingIcon) openNotepad();"
+      >
         <span>📝</span>
         <p>Notepad</p>
       </div>
@@ -101,6 +111,8 @@
       <div class="context-item" onclick="openWindow('window-settings')">
         ⚙️ System Settings
       </div>
+      <div class="context-item" onclick="createNewFile()">📄 New Text File</div>
+
       <div
         class="context-item"
         onclick="document.getElementById('wallpaper-upload').click()"
@@ -120,10 +132,27 @@
         class="window-header"
         onmousedown="dragWindow(event, 'window-terminal')"
       >
-        <span>Flux Terminal</span
-          <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
-          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
-          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
+        <span>Flux Terminal</span>
+        <div class="window-controls">
+          <button
+            class="win-btn min-btn"
+            onclick="minimizeWindow('window-terminal')"
+          >
+            –
+          </button>
+          <button
+            class="win-btn max-btn"
+            onclick="toggleMaximize('window-terminal')"
+          >
+            □
+          </button>
+          <button
+            class="win-btn close-btn"
+            onclick="closeWindow('window-terminal')"
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div class="window-content">
         <div id="term-output">
@@ -140,10 +169,27 @@
 
     <div id="window-nasa" class="window hidden" style="top: 150px; left: 200px">
       <div class="window-header" onmousedown="dragWindow(event, 'window-nasa')">
-        <span>Satellite Feed</span
-         <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
-          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
-          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
+        <span>Satellite Feed</span>
+        <div class="window-controls">
+          <button
+            class="win-btn min-btn"
+            onclick="minimizeWindow('window-nasa')"
+          >
+            –
+          </button>
+          <button
+            class="win-btn max-btn"
+            onclick="toggleMaximize('window-nasa')"
+          >
+            □
+          </button>
+          <button
+            class="win-btn close-btn"
+            onclick="closeWindow('window-nasa')"
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div class="window-content" id="nasa-content">
         <p style="color: var(--accent-color); font-family: monospace">
@@ -158,10 +204,25 @@
       style="top: 100px; left: 600px; width: 250px"
     >
       <div class="window-header" onmousedown="dragWindow(event, 'window-pet')">
-        <span>Desktop Pet</span
-         <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
-          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
-          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
+        <span>Desktop Pet</span>
+        <div class="window-controls">
+          <button
+            class="win-btn min-btn"
+            onclick="minimizeWindow('window-pet')"
+          >
+            –
+          </button>
+          <button
+            class="win-btn max-btn"
+            onclick="toggleMaximize('window-pet')"
+          >
+            □
+          </button>
+          <button class="win-btn close-btn" onclick="closeWindow('window-pet')">
+            ×
+          </button>
+        </div>
+      </div>
       <div class="window-content" style="text-align: center; font-size: 40px">
         <p>ʕ•ᴥ•ʔ</p>
         <p style="font-size: 14px; margin-top: 10px">Idle...</p>
@@ -177,10 +238,27 @@
         class="window-header"
         onmousedown="dragWindow(event, 'window-settings')"
       >
-        <span>System Settings</span
-         <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
-          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
-          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
+        <span>System Settings</span>
+        <div class="window-controls">
+          <button
+            class="win-btn min-btn"
+            onclick="minimizeWindow('window-settings')"
+          >
+            –
+          </button>
+          <button
+            class="win-btn max-btn"
+            onclick="toggleMaximize('window-settings')"
+          >
+            □
+          </button>
+          <button
+            class="win-btn close-btn"
+            onclick="closeWindow('window-settings')"
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div
         class="window-content"
@@ -233,18 +311,21 @@
         </div>
         <div class="control-group">
           <label>FROSTED GLASS BLUR</label>
-          <input type="range" id="blur-slider" min="0" max="40" step="1" value="15" oninput="handleBlurSlider(this.value)" style="width: 100%" />
+          <input
+            type="range"
+            id="blur-slider"
+            min="0"
+            max="40"
+            step="1"
+            value="15"
+            oninput="handleBlurSlider(this.value)"
+            style="width: 100%"
+          />
         </div>
 
         <div class="control-group">
           <label>CURSOR EFFECTS</label>
           <input type="checkbox" id="cursor-fx-toggle" checked />
-        />
-
-          <div class="control-group">
-            <label>CURSOR EFFECTS</label>
-            <input type="checkbox" id="cursor-fx-toggle" checked />
-          </div>
         </div>
 
         <div class="control-group">
@@ -282,10 +363,27 @@
         class="window-header"
         onmousedown="dragWindow(event, 'window-addapp')"
       >
-        <span>Add to Dock</span
-          <button class="win-btn min-btn" onclick="minimizeWindow('window-terminal')">–</button>
-          <button class="win-btn max-btn" onclick="toggleMaximize('window-terminal')">□</button>
-          <button class="win-btn close-btn" onclick="closeWindow('window-terminal')">×</button>
+        <span>Add to Dock</span>
+        <div class="window-controls">
+          <button
+            class="win-btn min-btn"
+            onclick="minimizeWindow('window-addapp')"
+          >
+            –
+          </button>
+          <button
+            class="win-btn max-btn"
+            onclick="toggleMaximize('window-addapp')"
+          >
+            □
+          </button>
+          <button
+            class="win-btn close-btn"
+            onclick="closeWindow('window-addapp')"
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div
         class="window-content"
@@ -327,20 +425,109 @@
       </div>
     </div>
 
+    <div id="launchpad" class="hidden">
+      <div class="lp-search-container">
+        <input
+          type="text"
+          id="lp-search"
+          placeholder="Search apps..."
+          onkeyup="filterLaunchpad()"
+        />
+      </div>
+      <div class="lp-grid">
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openBrowser();
+          "
+        >
+          <span>🌐</span>
+          <p>Browser</p>
+        </div>
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openMediaPlayer();
+          "
+        >
+          <span>🎵</span>
+          <p>Lo-Fi Player</p>
+        </div>
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openFileExplorer();
+          "
+        >
+          <span>📁</span>
+          <p>Files</p>
+        </div>
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openNotepad();
+          "
+        >
+          <span>📝</span>
+          <p>Notepad</p>
+        </div>
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openWindow('window-terminal');
+          "
+        >
+          <span>>_</span>
+          <p>Terminal</p>
+        </div>
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openWindow('window-settings');
+          "
+        >
+          <span>⚙️</span>
+          <p>Settings</p>
+        </div>
+        <div
+          class="lp-icon"
+          onclick="
+            toggleLaunchpad();
+            openWindow('window-nasa');
+          "
+        >
+          <span>🛰️</span>
+          <p>NASA Uplink</p>
+        </div>
+      </div>
+    </div>
+
     <div id="taskbar">
+      <div id="start-btn" onclick="toggleLaunchpad()">
+        <span style="font-size: 18px; margin-right: 5px">⚡</span> Flux
+      </div>
+      <div style="flex-grow: 1"></div>
       <div id="notif-bell" onclick="NotificationEngine.togglePanel()">
         🔔<span id="notif-badge" class="hidden">0</span>
       </div>
       <div id="clock">00:00</div>
     </div>
+
     <script>
       const bootMessages = [
-        "BIOS Version 2.0.1 initialized...",
-        "Checking system memory... OK",
-        "Mounting Virtual File System (VFS)... OK",
-        "Loading Kernel Modules...",
-        "Initializing Graphical Environment...",
-        "Starting FluxOS Workspace...",
+        "FluxOS Kernel v2.0.0 initializing...",
+        "Mounting virtual file system...",
+        "Loading aesthetics engine...",
+        "Calibrating window manager...",
+        "Establishing satellite uplink...",
+        "Starting notification service...",
+        "Boot sequence complete.",
       ];
 
       function runBootSequence() {
@@ -566,6 +753,88 @@
         oldOpenWindow(id);
         focusWindow(id);
       };
+
+      function toggleLaunchpad() {
+        const lp = document.getElementById("launchpad");
+        if (lp.classList.contains("hidden")) {
+          lp.classList.remove("hidden");
+          document.getElementById("lp-search").focus();
+        } else {
+          lp.classList.add("hidden");
+        }
+      }
+
+      function filterLaunchpad() {
+        const query = document.getElementById("lp-search").value.toLowerCase();
+        document.querySelectorAll(".lp-icon").forEach((icon) => {
+          const name = icon.querySelector("p").innerText.toLowerCase();
+          icon.style.display = name.includes(query) ? "flex" : "none";
+        });
+      }
+
+      function createNewFile() {
+        document.getElementById("context-menu").classList.add("hidden");
+        const filename = prompt(
+          "Enter new file name (e.g., notes.txt):",
+          "untitled.txt",
+        );
+        if (filename) {
+          VFS.write(filename, ""); // Create empty file
+          openNotepad(filename); // Instantly open it
+        }
+      }
+
+      function openBrowser() {
+        createApp({
+          id: "window-browser",
+          title: "Flux Browser",
+          icon: "🌐",
+          width: 700,
+          height: 500,
+          content: (el) => {
+            el.innerHTML = `
+              <div style="display:flex; flex-direction:column; height:100%; gap: 10px;">
+                <div style="display:flex; gap: 8px;">
+                  <input type="text" id="browser-url" value="https://en.wikipedia.org/wiki/Main_Page" style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 12px; border-radius:20px; outline:none;">
+                  <button onclick="document.getElementById('browser-frame').src = document.getElementById('browser-url').value" style="padding: 8px 18px; background:var(--accent-color); border:none; color:#000; font-weight:bold; border-radius:20px; cursor:pointer;">Go</button>
+                </div>
+                <div style="flex-grow:1; background:white; border-radius:6px; overflow:hidden;">
+                  <iframe id="browser-frame" src="https://en.wikipedia.org/wiki/Main_Page" style="width:100%; height:100%; border:none;"></iframe>
+                </div>
+                <small style="opacity:0.5; text-align:center;">Note: Some websites block embedding for security reasons.</small>
+              </div>`;
+          },
+        });
+        openWindow("window-browser");
+      }
+
+      function openMediaPlayer() {
+        createApp({
+          id: "window-media",
+          title: "Lo-Fi Vibes",
+          icon: "🎵",
+          width: 320,
+          height: 200,
+          content: (el) => {
+            el.innerHTML = `
+              <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap: 20px;">
+                <div class="vinyl-record">
+                   <div class="vinyl-label"></div>
+                </div>
+                <audio controls style="width: 90%; height: 35px; border-radius: 4px; outline: none; background: transparent;">
+                  <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </div>`;
+          },
+        });
+        openWindow("window-media");
+      }
+
+      document.addEventListener("mousedown", (e) => {
+        const win = e.target.closest(".window");
+        if (win && !win.classList.contains("hidden")) focusWindow(win.id);
+      });
     </script>
 
     <div id="toast-container"></div>
@@ -578,12 +847,7 @@
             NotificationEngine.save();
             NotificationEngine.renderHistory();
           "
-
-        document.addEventListener("mousedown", (e) => {
-        const win = e.target.closest(".window");
-        if (win && !win.classList.contains("hidden")) focusWindow(win.id);
-        });
-        > 
+        >
           Clear All
         </button>
       </div>
